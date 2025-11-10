@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Story – Zawla Comic</title>
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+<link href="style.css" rel="stylesheet" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+</head>
+
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Zawla Comic</a>
+      <a href="index.html" class="btn btn-outline-secondary btn-sm ms-2">🏠 Home</a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navmenu"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navmenu">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+
+          <li class="nav-item"><a class="nav-link active" href="#">Create Story</a></li>
+          <li class="nav-item"><a class="nav-link" href="library.html">My Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="tutorial.html">Tutorial</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main form -->
+  <div class="container py-5" style="max-width: 600px;">
+    <h2 class="text-center mb-4">Create Your Story</h2>
+
+    <form id="storyForm" class="p-4 bg-white rounded shadow-sm">
+     <div class="mb-3 position-relative">
+  <label class="form-label">Your Name</label>
+  <input type="text" id="userName" class="form-control" placeholder="Enter your name" required />
+  <small id="nameWarning" class="text-danger d-none position-absolute" style="bottom:-18px; left:0;">
+    ⚠️ Please avoid inappropriate words.
+  </small>
+</div>
+
+      <div class="mb-3">
+        <label class="form-label">Genre</label>
+        <select id="genre" class="form-select">
+          <option value="fantasy">Fantasy</option>
+          <option value="friendship">Friendship</option>
+          <option value="adventure">Adventure</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+<div class="form-check mb-3">
+  <input class="form-check-input" type="checkbox" id="filterToggle" checked>
+  <label class="form-check-label" for="filterToggle">
+    🧼 Enable kid-safe filter (hide bad words)
+  </label>
+</div>
+
+
+<!-- Language Level -->
+<div class="mb-3">
+  <label class="form-label">Language Level</label>
+  <select id="langLevel" class="form-select">
+    <option value="simple" selected>Simple (A1–A2)</option>
+    <option value="standard">Standard (B1)</option>
+    <option value="rich">Rich (B2+)</option>
+  </select>
+</div>
+
+<!-- Color Scheme (affects PDF colors) -->
+<div class="mb-3">
+  <label class="form-label">Color Scheme</label>
+  <select id="colorScheme" class="form-select">
+    <option value="blue" selected>Sky Blue</option>
+    <option value="green">Meadow Green</option>
+    <option value="purple">Lavender Purple</option>
+    <option value="orange">Sunset Orange</option>
+  </select>
+</div>
+
+
+
+        <label class="form-label">Story Length</label>
+        
+        <select id="length" class="form-select">
+          <option value="short">Short (3-4 paragraphs)</option>
+          <option value="medium">Medium (6-8 paragraphs)</option>
+          <option value="long">Long (10+ paragraphs)</option>
+        </select>
+      </div>
+
+<!-- 🧩 Step 1 — Photo upload section -->
+  <div class="mb-3">
+    <label class="form-label">Upload a Photo</label>
+    <input type="file" id="photoInput" accept="image/*" class="form-control" />
+    <small class="text-muted">This photo will appear in your story PDF (local only, not uploaded).</small>
+  </div>
+
+  <div class="text-center mt-3">
+    <img id="photoPreview" src="" alt="Photo Preview" class="img-fluid rounded shadow-sm d-none" style="max-width: 250px;" />
+  </div>
+
+
+      <button type="submit" class="btn btn-primary w-100">Generate Story</button>
+      <button id="regenBtn" type="button" class="btn btn-outline-secondary w-100 mt-2 d-none"> 🔄 Regenerate Story
+</button>
+
+    </form>
+
+    <!-- Placeholder for story -->
+    <div id="storyOutput" class="mt-4"></div>
+    <div class="text-center mt-3">
+  <button id="downloadPdfBtn" class="btn btn-success d-none">📄 Download as PDF</button>
+</div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyApQHXAfuTWh_GFsyB7fleGuvxAeODfB1A",
+    authDomain: "zawlacomic.firebaseapp.com",
+    projectId: "zawlacomic",
+    storageBucket: "zawlacomic.firebasestorage.app",
+    messagingSenderId: "225177170539",
+    appId: "1:225177170539:web:1dea7258f277ffa412b72e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // wait until user is logged in
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      alert("Please sign in first!");
+      window.location.href = "index.html";
+    } else {
+      console.log("Signed in as:", user.email);
+      window.currentUser = user; // save globally
+    }
+  });
+
+  // export db for other scripts
+  window.db = db;
+
+
+    // export Firestore functions so other scripts can use them
+  window.addDoc = addDoc;
+  window.collection = collection;
+
+</script>
+
+
+
+
+<script>
+  const storyForm = document.getElementById("storyForm");
+
+  // 🧼 very simple kid-safe filter (expand later if needed)
+const bannedWords = [
+  "kill","die","dead","blood","sex","naked","drugs","alcohol","weapon",
+  "violence","hate","racist","suicide","suicidal","abuse","nsfw","drug"
+];
+
+// 🧼 Kid-safe toggle system
+const nameInput = document.getElementById("userName");
+const nameWarning = document.getElementById("nameWarning");
+const filterToggle = document.getElementById("filterToggle");
+
+nameInput.addEventListener("input", () => {
+  if (!filterToggle.checked) return; // only run filter if checkbox is ON
+
+  const original = nameInput.value;
+  const cleaned = cleanText(original);
+
+  if (original !== cleaned) {
+    nameWarning.classList.remove("d-none");
+  } else {
+    nameWarning.classList.add("d-none");
+  }
+
+  nameInput.value = cleaned; // auto-clean
+});
+
+nameInput.addEventListener("blur", () => {
+  nameWarning.classList.add("d-none");
+});
+
+function cleanText(txt) {
+  let safe = txt;
+  for (const w of bannedWords) {
+    const re = new RegExp("\\b" + w + "\\b", "gi");
+    safe = safe.replace(re, "***");
+  }
+  return safe;
+}
+
+
+  const storyOutput = document.getElementById("storyOutput");
+
+
+// 📸 Preview uploaded image
+const photoInput = document.getElementById("photoInput");
+const photoPreview = document.getElementById("photoPreview");
+
+photoInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      photoPreview.src = e.target.result;
+      photoPreview.classList.remove("d-none");
+    };
+    reader.readAsDataURL(file);
+  } else {
+    photoPreview.src = "";
+    photoPreview.classList.add("d-none");
+  }
+});
+
+
+  storyForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+let name = document.getElementById("userName").value.trim();
+if (document.getElementById("filterToggle").checked) {
+  name = cleanText(name);
+}
+
+    const genre = document.getElementById("genre").value;
+    const length = document.getElementById("length").value;
+    const langLevel = document.getElementById("langLevel").value;
+    const colorScheme = document.getElementById("colorScheme").value;
+
+    // show loading message
+    storyOutput.innerHTML = `
+      <div class="text-center text-muted">
+        <div class="spinner-border text-primary mb-2" role="status"></div>
+        <p>Generating your story... please wait</p>
+      </div>
+    `;
+
+    // 🔹 placeholder for AI call (fake delay)
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // 🔹 placeholder story (replace with real AI response later)
+    const story = `
+      <h4 class="text-primary">✨ Your ${genre} story is ready!</h4>
+      <p>Once upon a time, <strong>${name}</strong> began a wonderful ${genre} journey.
+      This is a ${length} story filled with creativity and joy. 🌟</p>
+    `;
+
+
+// sanitize story before display/save
+const cleanedStoryHTML = cleanText(story);
+storyOutput.innerHTML = cleanedStoryHTML;
+console.log("📋 Cleaned story:", storyOutput.innerText);
+document.getElementById("downloadPdfBtn").classList.remove("d-none");
+
+
+
+
+    document.getElementById("regenBtn").classList.remove("d-none");
+
+
+
+    console.log("📸 Photo preview source:", photoPreview.src);
+
+document.getElementById("downloadPdfBtn").classList.remove("d-none");
+
+
+    // save story to Firestore
+    try {
+      if (window.db && window.currentUser) {
+        const storyData = {
+          userId: window.currentUser.uid,
+          userName: name,
+          genre: genre,
+          length: length,
+          langLevel: langLevel,
+        colorScheme: colorScheme,
+          story: cleanedStoryHTML,
+          createdAt: new Date()
+        };
+
+        const docRef = await addDoc(collection(window.db, "stories"), storyData);
+        console.log("✅ Story saved with ID:", docRef.id);
+      } else {
+        console.warn("User not signed in or database not ready.");
+      }
+    } catch (error) {
+      console.error("❌ Error saving story:", error);
+    }
+  });
+
+
+
+// 📄 PDF generation (clean + comic styled)
+document.getElementById("downloadPdfBtn").addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+  const name = document.getElementById("userName").value.trim();
+  const genre = document.getElementById("genre").value;
+  const length = document.getElementById("length").value;
+  const langLevel = document.getElementById("langLevel").value;
+const colorScheme = document.getElementById("colorScheme").value;
+  const storyHTML = storyOutput.innerText.replace(/[^\x00-\x7F]/g, ""); // remove emojis/symbols
+  const photo = photoPreview.src;
+
+
+    // 🎨 Choose color palette based on selection
+  const palette = {
+    blue:   { bg: [240, 246, 255], border: [70, 120, 240], title: [40, 60, 160], accent: [50, 90, 200] },
+    green:  { bg: [240, 252, 243], border: [60, 160, 110], title: [35, 120, 85],  accent: [50, 150, 100] },
+    purple: { bg: [247, 243, 255], border: [125, 95, 200], title: [90, 70, 160],  accent: [120, 95, 200] },
+    orange: { bg: [255, 248, 238], border: [230, 150, 80], title: [190, 100, 50], accent: [230, 140, 70] }
+  };
+
+  const colorKey = document.getElementById("colorScheme").value || "blue";
+  const pal = palette[colorKey] || palette.blue;
+
+
+// 🟨 Background (from chosen color scheme)
+doc.setFillColor(...pal.bg);
+doc.rect(0, 0, 210, 297, "F");
+
+// 🟥 Border (color based on theme)
+doc.setDrawColor(...pal.border);
+doc.setLineWidth(1.5);
+doc.rect(5, 5, 200, 287);
+
+// 🧢 Title (color based on theme)
+let y = 25; // starting Y position for PDF layout
+doc.setFont("helvetica", "bold");
+doc.setFontSize(24);
+doc.setTextColor(...pal.title);
+doc.text("Zawla Comic Story", 105, y, { align: "center" });
+
+
+  // 🧍 Author + Genre
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(13);
+  doc.setTextColor(60, 60, 60);
+  doc.text(`Author: ${name}`, 20, y);
+  y += 8;
+doc.text(`Genre: ${genre} • Level: ${document.getElementById("langLevel").value}`, 20, y);
+y += 10;
+
+  // 📸 Add photo (optional)
+  if (photo && !photo.includes("d-none")) {
+    doc.addImage(photo, "JPEG", 55, y, 100, 70); // centered
+    y += 80;
+  }
+
+  // ✨ Story Header
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+doc.setTextColor(...pal.accent);
+  doc.text("Your story begins...", 20, y);
+  y += 10;
+
+  // 📘 Story Text
+  doc.setFontSize(12);
+  doc.setFont("times", "normal");
+  doc.setTextColor(30, 30, 30);
+  const wrappedText = doc.splitTextToSize(storyHTML, 170);
+  doc.text(wrappedText, 20, y);
+  y += wrappedText.length * 5 + 10;
+
+  // 🖋 Footer
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text("Generated with Zawla Comic – Powered by AI & Creativity", 105, 285, { align: "center" });
+
+  // 💾 Save file
+  doc.save(`${name}_zawla_story.pdf`);
+
+
+
+  
+});
+
+
+// 🔄 Regenerate Story (same inputs, just reruns creation)
+document.getElementById("regenBtn").addEventListener("click", async () => {
+  storyOutput.innerHTML = `
+    <div class="text-center text-muted">
+      <div class="spinner-border text-primary mb-2" role="status"></div>
+      <p>Creating a new version... please wait</p>
+    </div>
+  `;
+
+  await new Promise((r) => setTimeout(r, 1200));
+let name = document.getElementById("userName").value.trim();
+
+// ✅ NEW — make regenerate respect the filter checkbox
+if (document.getElementById("filterToggle").checked) {
+  name = cleanText(name);
+}
+
+  const genre = document.getElementById("genre").value;
+  const length = document.getElementById("length").value;
+const langLevel = document.getElementById("langLevel").value;
+const colorScheme = document.getElementById("colorScheme").value;
+  const variant = Math.floor(Math.random() * 1000);
+  const newStory = `
+    <h4 class="text-primary">✨ Your ${genre} story (v${variant})</h4>
+    <p><strong>${name}</strong> begins another ${genre} adventure!
+    This is a ${length} story full of kindness, courage, and learning. 🌟</p>
+  `;
+
+let cleanedStoryHTML = newStory;
+
+// only clean if kid-safe filter is checked
+if (document.getElementById("filterToggle").checked) {
+  cleanedStoryHTML = cleanText(newStory);
+}
+
+storyOutput.innerHTML = cleanedStoryHTML;
+
+  document.getElementById("downloadPdfBtn").classList.remove("d-none");
+
+  try {
+    if (window.db && window.currentUser) {
+      const storyData = {
+        userId: window.currentUser.uid,
+        userName: name,
+        genre: genre,
+        length: length,
+        langLevel: langLevel,
+        colorScheme: colorScheme,
+        story: cleanedStoryHTML,
+        createdAt: new Date()
+      };
+      const docRef = await addDoc(collection(window.db, "stories"), storyData);
+      console.log("✅ Regenerated story saved with ID:", docRef.id);
+    }
+  } catch (err) {
+    console.error("❌ Error saving regenerated story:", err);
+  }
+});
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

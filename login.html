@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login – Zawla Comic</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Zawla Comic</a>
+      <a href="index.html" class="btn btn-outline-secondary btn-sm ms-2">🏠 Home</a>
+    </div>
+  </nav>
+
+  <!-- Login Box -->
+  <div class="container py-5" style="max-width:400px;">
+    <div class="card shadow-sm p-4">
+      <h4 class="text-center mb-3">Sign In to Continue</h4>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter your email" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
+      </div>
+
+      <div class="d-grid gap-2">
+        <button id="loginBtn" class="btn btn-primary">Login</button>
+        <button id="registerBtn" class="btn btn-outline-success">Register</button>
+        <button id="resetBtn" class="btn btn-outline-warning">Forgot Password?</button>
+      </div>
+
+      <hr class="my-3">
+
+      <div class="text-center">
+        <p class="small text-muted mb-2">or continue with</p>
+        <button id="googleBtn" class="btn btn-danger w-100">Continue with Google</button>
+      </div>
+
+      <p id="message" class="text-center small mt-3 text-muted"></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      sendPasswordResetEmail, 
+      GoogleAuthProvider, 
+      signInWithPopup 
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyApQHXAfuTWh_GFsyB7fleGuvxAeODfB1A",
+      authDomain: "zawlacomic.firebaseapp.com",
+      projectId: "zawlacomic",
+      storageBucket: "zawlacomic.firebasestorage.app",
+      messagingSenderId: "225177170539",
+      appId: "1:225177170539:web:1dea7258f277ffa412b72e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const msg = (t,c="text-muted")=>{
+      const el=document.getElementById("message");
+      el.textContent=t; el.className="text-center small mt-3 "+c;
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", async ()=>{
+      const email=document.getElementById("email").value;
+      const pass=document.getElementById("password").value;
+      try{
+        await signInWithEmailAndPassword(auth,email,pass);
+        msg("✅ Logged in! Redirecting...","text-success");
+        setTimeout(()=>window.location.href="create.html",1200);
+      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    });
+
+    document.getElementById("registerBtn").addEventListener("click", async ()=>{
+      const email=document.getElementById("email").value;
+      const pass=document.getElementById("password").value;
+      try{
+        await createUserWithEmailAndPassword(auth,email,pass);
+        msg("✅ Account created! Redirecting...","text-success");
+        setTimeout(()=>window.location.href="create.html",1200);
+      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", async ()=>{
+      const email=document.getElementById("email").value;
+      if(!email) return msg("⚠️ Enter your email first.","text-warning");
+      try{
+        await sendPasswordResetEmail(auth,email);
+        msg("📩 Reset link sent (check your inbox).","text-success");
+      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    });
+
+    document.getElementById("googleBtn").addEventListener("click", async ()=>{
+      try{
+        await signInWithPopup(auth,provider);
+        msg("✅ Logged in with Google!","text-success");
+        setTimeout(()=>window.location.href="create.html",1200);
+      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,45 @@
+/* 🌈 Global Theme – Zawla Comic */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg, #fdfcff 0%, #e7f0ff 100%);
+  min-height: 100vh;
+}
+
+.navbar {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  background: #fff;
+}
+
+.navbar-brand { color: #2b4cbf !important; }
+
+h1, h2, h4 { color: #2b4cbf; font-weight: 600; }
+
+/* Buttons */
+.btn-primary {
+  background-color: #4c7fff !important;
+  border-color: #4c7fff !important;
+  border-radius: 12px;
+  transition: .2s ease;
+}
+.btn-primary:hover { background-color: #3c68d3 !important; }
+
+.btn-outline-primary {
+  border-color: #4c7fff !important;
+  color: #4c7fff !important;
+  border-radius: 12px;
+}
+.btn-outline-primary:hover {
+  background-color: #4c7fff !important;
+  color: #fff !important;
+}
+
+.btn-outline-danger { border-radius: 12px; }
+
+/* Cards & footer */
+.card { border-radius: 16px; background: #fff; border: none; }
+.footer {
+  text-align:center; background:#fff; padding:24px 10px; color:#777;
+  border-top:1px solid #eee; font-size:.9rem; margin-top:60px;
+}
