@@ -4,65 +4,372 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login – Zawla Comic</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="style.css" rel="stylesheet" />
 
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --z-primary: #6c63ff;
+      --z-accent: #ffb347;
+      --z-bg: #f3f7ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #aee6ff, #dcd0ff, #c8f7c5);
+      padding: 16px;
+    }
+
+    .auth-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .auth-illustration {
+      background: radial-gradient(circle at top left, #ffe6c5, #f3f7ff);
+      padding: 32px 24px;
+    }
+
+    .auth-illustration h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .auth-illustration p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .badge-pill {
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .bubble {
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .bubble span.icon {
+      font-size: 1rem;
+    }
+
+    .auth-main {
+      padding: 32px 24px;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      gap: 8px;
+      background: #f3f5ff;
+      border-radius: 999px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      padding: 8px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #555;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: white;
+      color: var(--z-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--z-primary);
+      border-color: var(--z-primary);
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(0.95);
+    }
+
+    .btn-google {
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid #ddd;
+      background: white;
+    }
+
+    .btn-google img {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+    }
+
+    .small-link {
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .auth-illustration {
+        display: none;
+      }
+
+      .auth-main {
+        padding: 28px 20px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-light">
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">Zawla Comic</a>
-      <a href="index.html" class="btn btn-outline-secondary btn-sm ms-2">🏠 Home</a>
+<body>
+  <div class="auth-card row g-0">
+    <!-- Left side illustration / text -->
+    <div class="col-md-5 auth-illustration d-flex flex-column justify-content-between">
+      <div>
+        <span class="badge bg-light text-dark badge-pill mb-3">
+          🎨 Zawla Comic
+        </span>
+        <h1>Welcome back, hero 👋</h1>
+        <p>
+          Log in or create an account to turn yourself into the main character
+          of your own comic story.
+        </p>
+        <div class="bubble">
+          <span class="icon">📚</span>
+          <span>Kid-friendly AI stories</span>
+        </div>
+        <div class="bubble">
+          <span class="icon">✨</span>
+          <span>Personalized characters & adventures</span>
+        </div>
+      </div>
+      <p class="text-muted mb-0" style="font-size: 0.75rem;">
+        Zawla Comic – made with ❤️ by students.
+      </p>
     </div>
-  </nav>
 
-  <!-- Login Box -->
-  <div class="container py-5" style="max-width:400px;">
-    <div class="card shadow-sm p-4">
-      <h4 class="text-center mb-3">Sign In to Continue</h4>
-
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input type="email" id="email" class="form-control" placeholder="Enter your email" required />
+    <!-- Right side forms -->
+    <div class="col-md-7 auth-main">
+      <!-- Toggle buttons -->
+      <div class="toggle-buttons mb-3">
+        <button id="showLogin" class="toggle-btn active" type="button">
+          Log in
+        </button>
+        <button id="showSignup" class="toggle-btn" type="button">
+          Sign up
+        </button>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
-      </div>
+      <!-- LOGIN FORM -->
+      <form id="loginForm">
+        <h2 class="h5 mb-3">Log in to your account</h2>
+        <p class="text-muted small mb-4">
+          Continue your last adventure or start a new one.
+        </p>
 
-      <div class="d-grid gap-2">
-        <button id="loginBtn" class="btn btn-primary">Login</button>
-        <button id="registerBtn" class="btn btn-outline-success">Register</button>
-        <button id="resetBtn" class="btn btn-outline-warning">Forgot Password?</button>
-      </div>
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="loginEmail"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
 
-      <hr class="my-3">
+        <div class="mb-2">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="loginPassword"
+            placeholder="••••••••"
+            required
+          />
+        </div>
 
-      <div class="text-center">
-        <p class="small text-muted mb-2">or continue with</p>
-        <button id="googleBtn" class="btn btn-danger w-100">Continue with Google</button>
-      </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check small">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="rememberMe"
+            />
+            <label class="form-check-label" for="rememberMe">
+              Remember me
+            </label>
+          </div>
+          <!-- (You can implement reset later if you want) -->
+          <span class="small-link text-muted">
+            Forgot password? (coming soon)
+          </span>
+        </div>
 
-      <p id="message" class="text-center small mt-3 text-muted"></p>
+        <button type="submit" class="btn btn-primary w-100 mb-3">
+          Log in
+        </button>
+
+        <button type="button" class="btn btn-google w-100 mb-2" id="loginGoogleBtn">
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+          />
+          Continue with Google
+        </button>
+
+        <p class="text-muted text-center small mt-3 mb-0">
+          Don’t have an account?
+          <a href="#" id="linkToSignup" class="text-decoration-none">
+            Sign up here
+          </a>
+        </p>
+      </form>
+
+      <!-- SIGNUP FORM -->
+      <form id="signupForm" class="d-none">
+        <h2 class="h5 mb-3">Create your Zawla account</h2>
+        <p class="text-muted small mb-4">
+          We’ll use this info to create a safe space for kids’ stories.
+        </p>
+
+        <div class="mb-3">
+          <label for="signupName" class="form-label">Full name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="signupName"
+            placeholder="Your name"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="signupEmail" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="signupEmail"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="signupPassword" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="signupPassword"
+            placeholder="Create a strong password"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="signupConfirmPassword" class="form-label">
+            Confirm password
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            id="signupConfirmPassword"
+            placeholder="Repeat your password"
+            required
+          />
+        </div>
+
+        <div class="form-check mb-3 small">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="termsCheck"
+            required
+          />
+          <label class="form-check-label" for="termsCheck">
+            I agree to the terms and confirm that I’m using this for
+            kid-friendly content.
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">
+          Create account
+        </button>
+
+        <button type="button" class="btn btn-google w-100 mb-2" id="signupGoogleBtn">
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+          />
+          Sign up with Google
+        </button>
+
+        <p class="text-muted text-center small mt-3 mb-0">
+          Already have an account?
+          <a href="#" id="linkToLogin" class="text-decoration-none">
+            Log in here
+          </a>
+        </p>
+      </form>
     </div>
   </div>
 
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword, 
-      sendPasswordResetEmail, 
-      GoogleAuthProvider, 
-      signInWithPopup 
-    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  <!-- Firebase compat version (works with normal scripts) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
+  <script>
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyApQHXAfuTWh_GFsyB7fleGuvxAeODfB1A",
       authDomain: "zawlacomic.firebaseapp.com",
@@ -72,52 +379,116 @@
       appId: "1:225177170539:web:1dea7258f277ffa412b72e"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-    const msg = (t,c="text-muted")=>{
-      const el=document.getElementById("message");
-      el.textContent=t; el.className="text-center small mt-3 "+c;
+    // Toggle between login and signup
+    const showLoginBtn = document.getElementById("showLogin");
+    const showSignupBtn = document.getElementById("showSignup");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const linkToSignup = document.getElementById("linkToSignup");
+    const linkToLogin = document.getElementById("linkToLogin");
+
+    function showLogin() {
+      loginForm.classList.remove("d-none");
+      signupForm.classList.add("d-none");
+      showLoginBtn.classList.add("active");
+      showSignupBtn.classList.remove("active");
     }
 
-    document.getElementById("loginBtn").addEventListener("click", async ()=>{
-      const email=document.getElementById("email").value;
-      const pass=document.getElementById("password").value;
-      try{
-        await signInWithEmailAndPassword(auth,email,pass);
-        msg("✅ Logged in! Redirecting...","text-success");
-        setTimeout(()=>window.location.href="create.html",1200);
-      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    function showSignup() {
+      signupForm.classList.remove("d-none");
+      loginForm.classList.add("d-none");
+      showSignupBtn.classList.add("active");
+      showLoginBtn.classList.remove("active");
+    }
+
+    showLoginBtn.addEventListener("click", showLogin);
+    showSignupBtn.addEventListener("click", showSignup);
+    linkToSignup.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSignup();
+    });
+    linkToLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      showLogin();
     });
 
-    document.getElementById("registerBtn").addEventListener("click", async ()=>{
-      const email=document.getElementById("email").value;
-      const pass=document.getElementById("password").value;
-      try{
-        await createUserWithEmailAndPassword(auth,email,pass);
-        msg("✅ Account created! Redirecting...","text-success");
-        setTimeout(()=>window.location.href="create.html",1200);
-      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    // If already logged in and verified, send to index
+    auth.onAuthStateChanged((user) => {
+      if (user && user.emailVerified) {
+        window.location.href = "index.html";
+      }
     });
 
-    document.getElementById("resetBtn").addEventListener("click", async ()=>{
-      const email=document.getElementById("email").value;
-      if(!email) return msg("⚠️ Enter your email first.","text-warning");
-      try{
-        await sendPasswordResetEmail(auth,email);
-        msg("📩 Reset link sent (check your inbox).","text-success");
-      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    // SIGN UP with email
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("signupConfirmPassword").value;
+
+      if (password !== confirm) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const user = cred.user;
+
+        await user.updateProfile({ displayName: name });
+        await user.sendEmailVerification();
+
+        alert("🎉 Account created! A verification email has been sent. Please verify, then log in.");
+        showLogin();
+      } catch (error) {
+        alert(error.message);
+      }
     });
 
-    document.getElementById("googleBtn").addEventListener("click", async ()=>{
-      try{
-        await signInWithPopup(auth,provider);
-        msg("✅ Logged in with Google!","text-success");
-        setTimeout(()=>window.location.href="create.html",1200);
-      }catch(e){ msg("❌ "+e.message,"text-danger"); }
+    // LOGIN with email
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        const user = cred.user;
+
+        if (!user.emailVerified) {
+          alert("Please verify your email before logging in.");
+          await auth.signOut();
+          return;
+        }
+
+        window.location.href = "index.html";
+      } catch (error) {
+        alert(error.message);
+      }
     });
+
+    // GOOGLE sign in (both buttons use same handler)
+    async function handleGoogleLogin() {
+      try {
+        const result = await auth.signInWithPopup(googleProvider);
+        const user = result.user;
+        // Google accounts are already verified
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error(error);
+        alert("Google sign-in failed. Try again.");
+      }
+    }
+
+    document.getElementById("loginGoogleBtn").addEventListener("click", handleGoogleLogin);
+    document.getElementById("signupGoogleBtn").addEventListener("click", handleGoogleLogin);
   </script>
 </body>
 </html>
-
